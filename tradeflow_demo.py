@@ -197,16 +197,12 @@ fig.update_layout(
     legend=dict(
         orientation="h",
         yanchor="bottom",
-        y=1.02,                # оставляем как было
+        y=1.02,
         xanchor="right",
         x=1,
-        font=dict(size=14, color="white"),  # увеличиваем шрифт
+        font=dict(size=24)  # 👈 увеличиваем размер шрифта легенды (примерно х2)
     ),
-    xaxis=dict(
-        rangeslider=dict(visible=False),
-        type="date",
-        showgrid=False
-    ),
+    xaxis=dict(rangeslider=dict(visible=False), type="date", showgrid=False),
     yaxis=dict(showgrid=False),
     template="plotly_dark"
 )
