@@ -179,32 +179,33 @@ st.plotly_chart(fig2, use_container_width=True)
 st.subheader("🎬 Live Prediction Simulation")
 st.markdown("Interactive playback of model predictions over time (TradingView-style).")
 
-# ⚙️ Настройки пользователя
+# ⚙️ Настройки
 speed = st.slider("⏱️ Speed (seconds per step)", 0.05, 1.0, 0.25)
-step_size = st.slider("📏 Step size (bars per tick)", 1, 20, 10)  # 👈 новый ползунок
+step_size = st.slider("📏 Step size (bars per tick)", 1, 20, 10)
 
 # 🧱 Плейсхолдеры
 placeholder = st.empty()
 metric_placeholder = st.empty()
 
-# 🟢 Кнопки управления
-col1, col2 = st.columns(2)
-with col1:
-    start = st.button("▶️ Start Simulation")
-with col2:
-    if st.button("⏹ Stop Simulation"):
-        st.session_state["stop_sim"] = True
+# 🎮 Кнопки управления — теперь в одном ряду, слева
+col_start, col_stop = st.columns([0.15, 0.15])  # компактное размещение
+with col_start:
+    start = st.button("▶️ Start Simulation", use_container_width=True)
+with col_stop:
+    stop = st.button("⏹ Stop Simulation", use_container_width=True)
 
+if stop:
+    st.session_state["stop_sim"] = True
 stop_flag = st.session_state.get("stop_sim", False)
 
 if start:
-    st.session_state["stop_sim"] = False  # сбрасываем стоп при новом запуске
+    st.session_state["stop_sim"] = False
 
     df["sma"] = df["price"].rolling(20).mean()
     total_steps = len(df)
     trade_df = df[df["pred"] != "no_trade"]
 
-    for i in range(30, total_steps, step_size):  # 👈 теперь управляем шагом
+    for i in range(30, total_steps, step_size):
         if st.session_state.get("stop_sim"):
             st.warning("⏸ Simulation stopped.")
             break
@@ -231,13 +232,11 @@ if start:
             showlegend=False
         ))
 
-        # SMA
         sim_fig.add_trace(go.Scatter(
             x=subset["datetime"], y=subset["sma"],
             mode="lines", name="SMA 20", line=dict(color="#FFA726", width=1.5)
         ))
 
-        # Сигналы
         correct_live = subset[(subset["pred"] == subset["actual"]) & (subset["pred"] != "no_trade")]
         wrong_live = subset[(subset["pred"] != subset["actual"]) & (subset["pred"] != "no_trade")]
         no_trade_live = subset[subset["pred"] == "no_trade"]
@@ -270,6 +269,7 @@ if start:
         metric_placeholder.metric("📊 Live Accuracy", f"{live_acc:.2f}%")
         placeholder.plotly_chart(sim_fig, use_container_width=True)
         time.sleep(speed)
+
 
 
 
