@@ -58,33 +58,57 @@ c3.metric("Total Return (simulated)", f"{total_pnl:.2f}%")
 # --- Основной график ---
 st.subheader("📉 BTC Price & Model Predictions")
 
-# --- Кастомный ползунок для выбора даты ---
-min_date, max_date = df["datetime"].min(), df["datetime"].max()
-
+# --- Элегантные стили для ползунка ---
 st.markdown("""
 <style>
-/* Стили для ползунка Streamlit */
-[data-baseweb="slider"] > div {
-    background: linear-gradient(90deg, #00bcd4 0%, #26c6da 50%, #80deea 100%) !important;
-    height: 6px !important;
-    border-radius: 8px !important;
+/* Общая стилизация контейнера */
+[data-testid="stSlider"] {
+    padding-top: 0.5rem;
+    padding-bottom: 0.8rem;
 }
-[data-baseweb="slider"] div[role="slider"] {
-    background-color: #00e5ff !important;
-    border: 2px solid white !important;
-    box-shadow: 0px 0px 10px rgba(0,229,255,0.8) !important;
-}
+
+/* Цвет и шрифт метки */
 label[data-testid="stWidgetLabel"] p {
-    color: #00e5ff !important;
-    font-family: "Inter", "Segoe UI", sans-serif !important;
-    font-size: 14px !important;
+    color: #4DD0E1 !important;
+    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px;
+}
+
+/* Трек (линия) ползунка */
+[data-baseweb="slider"] > div {
+    background: linear-gradient(90deg, #0097A7 0%, #00BCD4 100%) !important;
+    height: 5px !important;
+    border-radius: 6px !important;
+}
+
+/* Ползунок (кружок) */
+[data-baseweb="slider"] div[role="slider"] {
+    background-color: #00BCD4 !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
+    transition: all 0.2s ease-in-out;
+}
+[data-baseweb="slider"] div[role="slider"]:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.9);
+}
+
+/* Текст дат */
+[data-testid="stTickBarMin"], [data-testid="stTickBarMax"] {
+    color: #00BCD4 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
     font-weight: 500 !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
+# --- Ползунок для выбора даты ---
+min_date, max_date = df["datetime"].min(), df["datetime"].max()
 date_range = st.slider(
-    "Select Date Range:",
+    "Select Date Range",
     min_value=min_date.to_pydatetime(),
     max_value=max_date.to_pydatetime(),
     value=(min_date.to_pydatetime(), max_date.to_pydatetime()),
@@ -92,12 +116,12 @@ date_range = st.slider(
     format="YYYY-MM-DD"
 )
 
-# --- Фильтрация по выбранным датам ---
+# --- Фильтрация данных ---
 mask = (df["datetime"] >= pd.Timestamp(date_range[0])) & (df["datetime"] <= pd.Timestamp(date_range[1]))
 filtered_df = df.loc[mask]
 filtered_trades = filtered_df[filtered_df["pred"] != "no_trade"]
 
-# --- График ---
+# --- Построение графика ---
 fig = go.Figure()
 
 fig.add_trace(go.Scatter(
@@ -133,16 +157,13 @@ fig.update_layout(
     height=500,
     margin=dict(l=30, r=30, t=40, b=30),
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-    xaxis=dict(
-        rangeslider=dict(visible=False),  # 💥 убрали чёрную полосу снизу
-        type="date",
-        showgrid=False
-    ),
+    xaxis=dict(rangeslider=dict(visible=False), type="date", showgrid=False),
     yaxis=dict(showgrid=False),
     template="plotly_dark"
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
