@@ -72,47 +72,58 @@ div[data-testid="metric-container"] {
 div[data-testid="metric-container"]:hover {
     box-shadow: 0 0 10px rgba(33,150,243,0.5);
 }
-div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div {
+.metric-title {
     color: black;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     letter-spacing: 0.3px;
+    margin-bottom: 4px;
 }
-div[data-testid="metric-value"] {
-    color: #42A5F5;
+.metric-value {
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
 }
+.green { color: #4CAF50; }
+.red { color: #E53935; }
 </style>
 """, unsafe_allow_html=True)
 
 # --- Верхний ряд ---
-col1, col2, col3 = st.columns(3)
-col1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
-col2.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
-col3.metric("Max Drawdown", f"{max_drawdown * 100:.2f}%")
+c1, c2, c3 = st.columns(3)
+c1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
+c2.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
+c3.metric("Max Drawdown", f"{max_drawdown * 100:.2f}%")
 
 # --- Нижний ряд ---
-col4, col5, col6 = st.columns(3)
-col4.metric("Total Trades", f"{total_trades}")
+c4, c5, c6 = st.columns(3)
+c4.metric("Total Trades", f"{total_trades}")
 
-# --- Custom стрелки ---
-green_arrow = "&#9650;"  # ▲
-red_arrow = "&#9660;"    # ▼
+# зелёная и красная стрелки
+green_arrow = "&#9650;"
+red_arrow = "&#9660;"
 
-col5.markdown(
-    f"<div style='text-align:center;'>"
-    f"<div style='color:black; font-size:14px; font-family:Inter, sans-serif;'>Correct Trades</div>"
-    f"<div style='font-size:20px; color:#4CAF50; font-weight:600;'>{green_arrow} {correct_trades}</div>"
-    f"</div>",
+# Ровное позиционирование
+c5.markdown(
+    f"""
+    <div style='text-align:center;'>
+        <div class='metric-title'>Correct Trades</div>
+        <div class='metric-value green'>{green_arrow} {correct_trades}</div>
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
-col6.markdown(
-    f"<div style='text-align:center;'>"
-    f"<div style='color:black; font-size:14px; font-family:Inter, sans-serif;'>Wrong Trades</div>"
-    f"<div style='font-size:20px; color:#E53935; font-weight:600;'>{red_arrow} {wrong_trades}</div>"
-    f"</div>",
+c6.markdown(
+    f"""
+    <div style='text-align:center;'>
+        <div class='metric-title'>Wrong Trades</div>
+        <div class='metric-value red'>{red_arrow} {wrong_trades}</div>
+    </div>
+    """,
     unsafe_allow_html=True
 )
+
 
 
 
