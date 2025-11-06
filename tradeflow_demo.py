@@ -290,6 +290,100 @@ st.plotly_chart(fig2, use_container_width=True)
 
 
 
+# --- Confidence Filter ---
+st.subheader("🕹 Confidence Filter")
+
+min_conf = st.slider(
+    "Min Confidence Threshold",
+    0.5, 1.0, 0.6, 0.01,
+    help="Filter trades by model confidence"
+)
+
+# Фильтрация трейдов по уверенности
+filtered_trades_conf = df[(df['pred'] != 'no_trade') & (df['prob'] >= min_conf)]
+total_trades_conf = len(filtered_trades_conf)
+accuracy_conf = (filtered_trades_conf['pred'] == filtered_trades_conf['actual']).mean() * 100 if total_trades_conf > 0 else 0
+
+# Вывод динамических метрик
+c1, c2 = st.columns(2)
+c1.metric("Filtered Accuracy", f"{accuracy_conf:.2f}%")
+c2.metric("Remaining Trades", f"{total_trades_conf}")
+
+# Подпись под блоком
+st.markdown(
+    f"<p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>"
+    f"When you increase confidence threshold, accuracy rises but number of trades falls — showing realistic precision filtering.</p>",
+    unsafe_allow_html=True
+)
+
+
+
+
+
+
+# --- Rolling PnL vs Accuracy ---
+st.subheader("📈 Rolling PnL vs Accuracy")
+
+# Кумулятивный PnL
+df['cum_pnl'] = (1 + df['pnl']).cumprod() - 1
+
+# Rolling accuracy (на окне, например, 100 точек)
+window = 100
+df['rolling_acc'] = (
+    (df['pred'] == df['actual'])
+    .rolling(window)
+    .mean()
+    .fillna(0)
+) * 100
+
+# Построение графика
+fig_pnl_acc = go.Figure()
+
+fig_pnl_acc.add_trace(go.Scatter(
+    x=df['datetime'], y=df['cum_pnl'],
+    mode='lines',
+    name='Cumulative PnL',
+    line=dict(color='#42A5F5', width=2)
+))
+
+fig_pnl_acc.add_trace(go.Scatter(
+    x=df['datetime'], y=df['rolling_acc'],
+    mode='lines',
+    name='Rolling Accuracy (100 trades)',
+    line=dict(color='#FF5252', width=2, dash='dot'),
+    yaxis='y2'
+))
+
+# Настройка осей и легенды
+fig_pnl_acc.update_layout(
+    template="plotly_dark",
+    height=450,
+    margin=dict(l=30, r=30, t=40, b=30),
+    legend=dict(
+        orientation="h",
+        yanchor="bottom", y=1.02,
+        xanchor="right", x=1,
+        font=dict(size=14)
+    ),
+    xaxis=dict(title="Time", showgrid=False),
+    yaxis=dict(title="Cumulative PnL", showgrid=False),
+    yaxis2=dict(
+        title="Rolling Accuracy (%)",
+        overlaying='y',
+        side='right',
+        showgrid=False
+    )
+)
+
+st.plotly_chart(fig_pnl_acc, use_container_width=True)
+
+
+
+
+
+
+
+
 # --- Live Simulation ---
 st.subheader("🎬 Live Prediction Simulation")
 st.markdown("Interactive playback of model predictions over time (TradingView-style).")
