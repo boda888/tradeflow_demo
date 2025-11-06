@@ -175,19 +175,19 @@ no_trade = filtered_df[filtered_df["pred"] == "no_trade"]
 if not correct.empty:
     fig.add_trace(go.Scatter(
         x=correct["datetime"], y=correct["price"],
-        mode="markers", name="✅ Correct",
+        mode="markers", name=" Correct",
         marker=dict(color="green", size=7, symbol="triangle-up")
     ))
 if not wrong.empty:
     fig.add_trace(go.Scatter(
         x=wrong["datetime"], y=wrong["price"],
-        mode="markers", name="❌ Wrong",
+        mode="markers", name=" Wrong",
         marker=dict(color="red", size=7, symbol="x")
     ))
 if not no_trade.empty:
     fig.add_trace(go.Scatter(
         x=no_trade["datetime"], y=no_trade["price"],
-        mode="markers", name="⚪ No Trade",
+        mode="markers", name=" No Trade",
         marker=dict(color="orange", size=6, symbol="circle-open")
     ))
 
