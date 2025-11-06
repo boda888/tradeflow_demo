@@ -72,22 +72,23 @@ div[data-testid="metric-container"] {
 div[data-testid="metric-container"]:hover {
     box-shadow: 0 0 10px rgba(33,150,243,0.5);
 }
-.metric-title {
-    color: black;
+div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div {
+    color: #90CAF9;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     letter-spacing: 0.3px;
-    margin-bottom: 4px;
 }
-.metric-value {
-    font-size: 20px;
+div[data-testid="stMetricValue"] {
+    color: #42A5F5;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
+    font-size: 20px;
 }
-.green { color: #4CAF50; }
-.red { color: #E53935; }
 </style>
 """, unsafe_allow_html=True)
+
+# --- Символы стрелок ---
+arrow_up_svg = "&#9650;"   # зелёная ▲
+arrow_down_svg = "&#9660;" # красная ▼
 
 # --- Верхний ряд ---
 c1, c2, c3 = st.columns(3)
@@ -98,31 +99,17 @@ c3.metric("Max Drawdown", f"{max_drawdown * 100:.2f}%")
 # --- Нижний ряд ---
 c4, c5, c6 = st.columns(3)
 c4.metric("Total Trades", f"{total_trades}")
-
-# зелёная и красная стрелки
-green_arrow = "&#9650;"
-red_arrow = "&#9660;"
-
-# Ровное позиционирование
 c5.markdown(
-    f"""
-    <div style='text-align:center;'>
-        <div class='metric-title'>Correct Trades</div>
-        <div class='metric-value green'>{green_arrow} {correct_trades}</div>
-    </div>
-    """,
+    f"<div style='font-size:20px; color:#4CAF50; font-weight:600;'>{arrow_up_svg} {correct_trades}</div>"
+    f"<div style='font-size:13px; color:#90CAF9;'>Correct Trades</div>",
+    unsafe_allow_html=True
+)
+c6.markdown(
+    f"<div style='font-size:20px; color:#E53935; font-weight:600;'>{arrow_down_svg} {wrong_trades}</div>"
+    f"<div style='font-size:13px; color:#90CAF9;'>Wrong Trades</div>",
     unsafe_allow_html=True
 )
 
-c6.markdown(
-    f"""
-    <div style='text-align:center;'>
-        <div class='metric-title'>Wrong Trades</div>
-        <div class='metric-value red'>{red_arrow} {wrong_trades}</div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 
 
 
