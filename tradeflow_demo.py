@@ -162,12 +162,14 @@ st.markdown(
 # --- Построение графика ---
 fig = go.Figure()
 
+# Линия цены
 fig.add_trace(go.Scatter(
     x=filtered_df["datetime"], y=filtered_df["price"],
     mode="lines", name="BTC Price",
     line=dict(color="lightgray", width=1)
 ))
 
+# Фактические точки на графике (без легенды)
 correct = filtered_trades[filtered_trades["pred"] == filtered_trades["actual"]]
 wrong = filtered_trades[filtered_trades["pred"] != filtered_trades["actual"]]
 no_trade = filtered_df[filtered_df["pred"] == "no_trade"]
@@ -175,22 +177,48 @@ no_trade = filtered_df[filtered_df["pred"] == "no_trade"]
 if not correct.empty:
     fig.add_trace(go.Scatter(
         x=correct["datetime"], y=correct["price"],
-        mode="markers", name=" Correct",
-        marker=dict(color="green", size=14, symbol="triangle-up")  # ↑ увеличено
+        mode="markers",
+        marker=dict(color="green", size=7, symbol="triangle-up"),
+        showlegend=False
     ))
 if not wrong.empty:
     fig.add_trace(go.Scatter(
         x=wrong["datetime"], y=wrong["price"],
-        mode="markers", name=" Wrong",
-        marker=dict(color="red", size=14, symbol="x")  # ↑ увеличено
+        mode="markers",
+        marker=dict(color="red", size=7, symbol="x"),
+        showlegend=False
     ))
 if not no_trade.empty:
     fig.add_trace(go.Scatter(
         x=no_trade["datetime"], y=no_trade["price"],
-        mode="markers", name=" No Trade",
-        marker=dict(color="orange", size=12, symbol="circle-open")  # ↑ увеличено
+        mode="markers",
+        marker=dict(color="orange", size=6, symbol="circle-open"),
+        showlegend=False
     ))
 
+# --- Фиктивные большие маркеры для легенды ---
+fig.add_trace(go.Scatter(
+    x=[None], y=[None],
+    mode="markers", name="BTC Price",
+    marker=dict(color="lightgray", size=10, symbol="line-ns")
+))
+fig.add_trace(go.Scatter(
+    x=[None], y=[None],
+    mode="markers", name="✅ Correct",
+    marker=dict(color="green", size=14, symbol="triangle-up")
+))
+fig.add_trace(go.Scatter(
+    x=[None], y=[None],
+    mode="markers", name="❌ Wrong",
+    marker=dict(color="red", size=14, symbol="x")
+))
+fig.add_trace(go.Scatter(
+    x=[None], y=[None],
+    mode="markers", name="⚪ No Trade",
+    marker=dict(color="orange", size=12, symbol="circle-open")
+))
+
+# --- Настройки отображения ---
 fig.update_layout(
     height=500,
     margin=dict(l=30, r=30, t=40, b=30),
@@ -200,7 +228,7 @@ fig.update_layout(
         y=1.02,
         xanchor="right",
         x=1,
-        font=dict(size=18)  # 👈 увеличиваем размер шрифта легенды (примерно х2)
+        font=dict(size=18)  # увеличенный размер шрифта легенды
     ),
     xaxis=dict(rangeslider=dict(visible=False), type="date", showgrid=False),
     yaxis=dict(showgrid=False),
@@ -208,6 +236,7 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
