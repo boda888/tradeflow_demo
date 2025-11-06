@@ -21,7 +21,7 @@ st.markdown("""
 **Model:** TradeFlow v0.3  
 **Trained on:** BTC/USDT (15-minute candles)  
 **Data period:** Sep 2025 – Oct 2025  
-**Model type:** LGBMClassifier
+**Model type:** LGBMClassifier  
 **Signal horizon:** 1 hour ahead  
 """)
 
