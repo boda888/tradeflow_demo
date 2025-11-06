@@ -276,6 +276,8 @@ fig2.update_layout(height=400, margin=dict(l=30, r=30, t=40, b=30))
 st.plotly_chart(fig2, use_container_width=True)
 
 
+
+
 # --- Live Simulation ---
 st.subheader("🎬 Live Prediction Simulation")
 st.markdown("Interactive playback of model predictions over time (TradingView-style).")
@@ -288,8 +290,8 @@ step_size = st.slider("📏 Step size (bars per tick)", 1, 20, 10)
 placeholder = st.empty()
 metric_placeholder = st.empty()
 
-# 🎮 Кнопки управления — теперь в одном ряду, слева
-col_start, col_stop = st.columns([0.15, 0.15])  # компактное размещение
+# 🎮 Кнопки управления
+col_start, col_stop = st.columns([0.15, 0.15])
 with col_start:
     start = st.button("▶️ Start Simulation", use_container_width=True)
 with col_stop:
@@ -304,7 +306,6 @@ if start:
 
     df["sma"] = df["price"].rolling(20).mean()
     total_steps = len(df)
-    trade_df = df[df["pred"] != "no_trade"]
 
     for i in range(30, total_steps, step_size):
         if st.session_state.get("stop_sim"):
@@ -321,6 +322,7 @@ if start:
         # --- График ---
         sim_fig = go.Figure()
 
+        # Свечи
         sim_fig.add_trace(go.Candlestick(
             x=subset["datetime"],
             open=subset["price"].shift(1).fillna(subset["price"]),
@@ -333,43 +335,73 @@ if start:
             showlegend=False
         ))
 
+        # SMA
         sim_fig.add_trace(go.Scatter(
             x=subset["datetime"], y=subset["sma"],
-            mode="lines", name="SMA 20", line=dict(color="#FFA726", width=1.5)
+            mode="lines", name="SMA 20",
+            line=dict(color="#FFA726", width=1.5)
         ))
 
+        # Точки на графике (маленькие)
         correct_live = subset[(subset["pred"] == subset["actual"]) & (subset["pred"] != "no_trade")]
         wrong_live = subset[(subset["pred"] != subset["actual"]) & (subset["pred"] != "no_trade")]
         no_trade_live = subset[subset["pred"] == "no_trade"]
 
         sim_fig.add_trace(go.Scatter(
             x=correct_live["datetime"], y=correct_live["price"],
-            mode="markers", name="✅ Correct",
-            marker=dict(color="#00E676", size=10, symbol="triangle-up")
+            mode="markers", marker=dict(color="#00E676", size=8, symbol="triangle-up"),
+            showlegend=False
         ))
         sim_fig.add_trace(go.Scatter(
             x=wrong_live["datetime"], y=wrong_live["price"],
-            mode="markers", name="❌ Wrong",
-            marker=dict(color="#FF1744", size=10, symbol="x")
+            mode="markers", marker=dict(color="#FF1744", size=8, symbol="x"),
+            showlegend=False
         ))
         sim_fig.add_trace(go.Scatter(
             x=no_trade_live["datetime"], y=no_trade_live["price"],
-            mode="markers", name="⚪ No Trade",
-            marker=dict(color="#FFD600", size=8, symbol="circle-open")
+            mode="markers", marker=dict(color="#FFD600", size=7, symbol="circle-open"),
+            showlegend=False
         ))
 
+        # --- Отдельные "фиктивные" следы только для легенды ---
+        sim_fig.add_trace(go.Scatter(
+            x=[None], y=[None],
+            mode="markers", name="✅ Correct",
+            marker=dict(color="#00E676", size=14, symbol="triangle-up")
+        ))
+        sim_fig.add_trace(go.Scatter(
+            x=[None], y=[None],
+            mode="markers", name="❌ Wrong",
+            marker=dict(color="#FF1744", size=14, symbol="x")
+        ))
+        sim_fig.add_trace(go.Scatter(
+            x=[None], y=[None],
+            mode="markers", name="⚪ No Trade",
+            marker=dict(color="#FFD600", size=12, symbol="circle-open")
+        ))
+
+        # --- Настройки оформления ---
         sim_fig.update_layout(
             template="plotly_dark",
             height=500,
             margin=dict(l=30, r=30, t=40, b=30),
             xaxis_rangeslider_visible=False,
             yaxis_title="BTC Price",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1,
+                font=dict(size=18)  # увеличенный размер шрифта легенды
+            )
         )
 
+        # --- Метрика ---
         metric_placeholder.metric("📊 Live Accuracy", f"{live_acc:.2f}%")
         placeholder.plotly_chart(sim_fig, use_container_width=True)
         time.sleep(speed)
+
 
 
 
