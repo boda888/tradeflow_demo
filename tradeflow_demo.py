@@ -106,7 +106,7 @@ arrow_down_svg = "&#9660;" # красная ▼
 c1, c2, c3 = st.columns(3)
 c1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
 c2.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
-c3.metric("Max Drawdown", f"{0.057 * 100:.2f}%")
+c3.metric("Max Drawdown", f"{-0.057 * 100:.2f}%")
 
 # --- Нижний ряд ---
 c4, c5, c6 = st.columns(3)
