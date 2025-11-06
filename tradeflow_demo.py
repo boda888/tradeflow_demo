@@ -52,8 +52,8 @@ max_drawdown = (1 + returns).cumprod().div((1 + returns).cumprod().cummax()).min
 
 # Новые метрики
 total_trades = len(trades)
-long_signals = (trades['pred'] == 'up').sum()
-short_signals = (trades['pred'] == 'down').sum()
+correct_trades = (trades['pred'] == trades['actual']).sum()
+wrong_trades = (trades['pred'] != trades['actual']).sum()
 
 # --- Секция Model Insights ---
 st.subheader("📊 Model Insights Overview")
@@ -73,7 +73,7 @@ div[data-testid="metric-container"]:hover {
     box-shadow: 0 0 10px rgba(33,150,243,0.5);
 }
 div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div {
-    color: #90CAF9;
+    color: black;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     letter-spacing: 0.3px;
@@ -86,10 +86,6 @@ div[data-testid="stMetricValue"] {
 </style>
 """, unsafe_allow_html=True)
 
-# SVG стрелки
-arrow_up_svg = "&#9650;"   # зелёная ▲
-arrow_down_svg = "&#9660;" # красная ▼
-
 # --- Верхний ряд ---
 c1, c2, c3 = st.columns(3)
 c1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
@@ -99,25 +95,8 @@ c3.metric("Max Drawdown", f"{max_drawdown * 100:.2f}%")
 # --- Нижний ряд ---
 c4, c5, c6 = st.columns(3)
 c4.metric("Total Trades", f"{total_trades}")
-c5.markdown(
-    f"<div style='font-size:20px; color:#4CAF50; font-weight:600;'>{arrow_up_svg} {long_signals}</div>"
-    f"<div style='font-size:13px; color:#90CAF9;'>Long Signals</div>",
-    unsafe_allow_html=True
-)
-c6.markdown(
-    f"<div style='font-size:20px; color:#E53935; font-weight:600;'>{arrow_down_svg} {short_signals}</div>"
-    f"<div style='font-size:13px; color:#90CAF9;'>Short Signals</div>",
-    unsafe_allow_html=True
-)
-
-# --- Краткое резюме ---
-st.markdown(
-    f"<p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>"
-    f"Out of {len(df):,} total data points, {total_trades:,} were executed trades. "
-    f"Detected {long_signals} long and {short_signals} short signals. "
-    f"No-trade share: {no_trade_ratio:.1f}%.</p>",
-    unsafe_allow_html=True
-)
+c5.metric("✅ Correct Trades", f"{correct_trades}")
+c6.metric("❌ Wrong Trades", f"{wrong_trades}")
 
 
 
