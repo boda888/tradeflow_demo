@@ -46,12 +46,16 @@ if df.empty:
 # --- Модельные метрики (Model Insights) ---
 trades = df[df['pred'] != 'no_trade']
 accuracy = (trades['pred'] == trades['actual']).mean() * 100 if len(trades) > 0 else 0
-avg_prob = df['prob'].mean() * 100 if 'prob' in df else 0
 total_pnl = df.get('pnl', pd.Series(0)).sum() * 100
 no_trade_ratio = (df['pred'] == 'no_trade').mean() * 100
 returns = df.get('pnl', pd.Series(0)).fillna(0)
-sharpe_ratio = (returns.mean() / returns.std() * (252 ** 0.5)) if returns.std() > 0 else 0
 max_drawdown = (1 + returns).cumprod().div((1 + returns).cumprod().cummax()).min() - 1
+
+# Новые метрики
+total_ticks = len(df)
+total_trades = len(trades)
+long_signals = (trades['pred'] == 'up').sum()
+short_signals = (trades['pred'] == 'down').sum()
 
 # --- Секция Model Insights ---
 st.subheader("📊 Model Insights Overview")
@@ -60,36 +64,45 @@ st.subheader("📊 Model Insights Overview")
 st.markdown("""
 <style>
 div[data-testid="metric-container"] {
-    background: rgba(255,255,255,0.05);
+    background: rgba(10,25,47,0.7); /* тёмно-синий фон с прозрачностью */
     border-radius: 12px;
     padding: 10px 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(30,60,120,0.4);
 }
 div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div {
-    color: #4DD0E1;
+    color: #90CAF9; /* светло-синий текст */
     font-family: 'Inter', sans-serif;
     font-size: 14px;
 }
 div[data-testid="stMetricValue"] {
-    color: #00E5FF;
+    color: #42A5F5; /* основной акцент — насыщенно-синий */
     font-weight: 600;
     font-size: 20px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Метрики в три ряда ---
+# --- Метрики в две строки ---
 row1_col1, row1_col2, row1_col3 = st.columns(3)
 row2_col1, row2_col2, row2_col3 = st.columns(3)
 
 row1_col1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
-row1_col2.metric("Avg Confidence", f"{avg_prob:.1f}%")
-row1_col3.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
+row1_col2.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
+row1_col3.metric("Total Return (Simulated)", f"{total_pnl:.2f}%")
 
-row2_col1.metric("Total Return (Simulated)", f"{total_pnl:.2f}%")
-row2_col2.metric("Sharpe Ratio", f"{sharpe_ratio:.2f}")
-row2_col3.metric("Max Drawdown", f"{max_drawdown*100:.2f}%")
+row2_col1.metric("Total Trades", f"{total_trades}")
+row2_col2.metric("Ticks (All Data Points)", f"{total_ticks}")
+row2_col3.metric("Signals (Long / Short)", f"{long_signals} / {short_signals}")
+
+# --- Дополнительно можно добавить краткое резюме под блоком ---
+st.markdown(
+    f"<p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>"
+    f"From {total_ticks:,} total ticks, {total_trades:,} were trading opportunities "
+    f"({long_signals} long / {short_signals} short). No-trade share: {no_trade_ratio:.1f}%.</p>",
+    unsafe_allow_html=True
+)
+
 
 
 
