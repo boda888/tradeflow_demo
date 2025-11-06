@@ -343,18 +343,10 @@ baseline_trades = int(df_conf_sim.loc[df_conf_sim["confidence"] == 0.5, "trades"
 # --- Отображение метрик ---
 c1, c2, c3 = st.columns(3)
 c1.metric("Filtered Accuracy", f"{accuracy_conf:.2f}%", f"{accuracy_conf - baseline_acc:+.2f}%")
-c2.metric("Remaining Trades", f"{trades_conf}", f"{(trades_conf / baseline_trades - 1) * 100:+.1f}%")
+c2.metric("Remaining Trades", f"{trades_conf}")
 c3.metric("Baseline Accuracy", f"{baseline_acc:.2f}%")
 
-st.markdown(
-    f"""
-    <p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>
-    As confidence threshold increases, <b>accuracy rises non-linearly</b> while 
-    <b>number of trades gradually decreases</b> — showing model’s calibration quality.
-    </p>
-    """,
-    unsafe_allow_html=True
-)
+
 
 
 
