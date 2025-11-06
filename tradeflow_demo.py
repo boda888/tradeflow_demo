@@ -58,52 +58,6 @@ c3.metric("Total Return (simulated)", f"{total_pnl:.2f}%")
 # --- Основной график ---
 st.subheader("📉 BTC Price & Model Predictions")
 
-# --- Элегантные стили для ползунка ---
-st.markdown("""
-<style>
-/* Общая стилизация контейнера */
-[data-testid="stSlider"] {
-    padding-top: 0.5rem;
-    padding-bottom: 0.8rem;
-}
-
-/* Цвет и шрифт метки */
-label[data-testid="stWidgetLabel"] p {
-    color: #4DD0E1 !important;
-    font-family: 'Inter', 'Segoe UI', sans-serif !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.3px;
-}
-
-/* Трек (линия) ползунка */
-[data-baseweb="slider"] > div {
-    background: linear-gradient(90deg, #0097A7 0%, #00BCD4 100%) !important;
-    height: 5px !important;
-    border-radius: 6px !important;
-}
-
-/* Ползунок (кружок) */
-[data-baseweb="slider"] div[role="slider"] {
-    background-color: #00BCD4 !important;
-    border: 2px solid #ffffff !important;
-    box-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
-    transition: all 0.2s ease-in-out;
-}
-[data-baseweb="slider"] div[role="slider"]:hover {
-    transform: scale(1.2);
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.9);
-}
-
-/* Текст дат */
-[data-testid="stTickBarMin"], [data-testid="stTickBarMax"] {
-    color: #00BCD4 !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # --- Ползунок для выбора даты ---
 min_date, max_date = df["datetime"].min(), df["datetime"].max()
