@@ -293,29 +293,44 @@ st.plotly_chart(fig2, use_container_width=True)
 # --- Confidence Filter ---
 st.subheader("🕹 Confidence Filter")
 
+# Слайдер для минимальной уверенности
 min_conf = st.slider(
     "Min Confidence Threshold",
     0.5, 1.0, 0.6, 0.01,
-    help="Filter trades by model confidence"
+    help="Filter trades by model confidence (prob >= threshold)"
 )
 
-# Фильтрация трейдов по уверенности
-filtered_trades_conf = df[(df['pred'] != 'no_trade') & (df['prob'] >= min_conf)]
+# --- Фильтрация только по трейдам (без no_trade) ---
+trades_only = df[df["pred"] != "no_trade"].copy()
+filtered_trades_conf = trades_only[trades_only["prob"] >= min_conf]
+
+# --- Метрики после фильтра ---
 total_trades_conf = len(filtered_trades_conf)
-accuracy_conf = (filtered_trades_conf['pred'] == filtered_trades_conf['actual']).mean() * 100 if total_trades_conf > 0 else 0
+if total_trades_conf > 0:
+    accuracy_conf = (filtered_trades_conf["pred"] == filtered_trades_conf["actual"]).mean() * 100
+else:
+    accuracy_conf = 0
 
-# Вывод динамических метрик
-c1, c2 = st.columns(2)
-c1.metric("Filtered Accuracy", f"{accuracy_conf:.2f}%")
-c2.metric("Remaining Trades", f"{total_trades_conf}")
+# --- Метрики до фильтра ---
+baseline_trades = len(trades_only)
+baseline_acc = (trades_only["pred"] == trades_only["actual"]).mean() * 100
 
-# Подпись под блоком
+# --- Отображение метрик ---
+c1, c2, c3 = st.columns(3)
+c1.metric("Filtered Accuracy", f"{accuracy_conf:.2f}%", f"{accuracy_conf - baseline_acc:+.2f}%")
+c2.metric("Remaining Trades", f"{total_trades_conf}", f"{(total_trades_conf / baseline_trades - 1) * 100:+.1f}%")
+c3.metric("Baseline Accuracy", f"{baseline_acc:.2f}%")
+
+# --- Текст-пояснение ---
 st.markdown(
-    f"<p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>"
-    f"When you increase confidence threshold, accuracy rises but number of trades falls — showing realistic precision filtering.</p>",
+    f"""
+    <p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>
+    As confidence threshold increases, <b>accuracy rises</b> but <b>number of trades decreases</b> —
+    reflecting a more conservative and precise trading strategy.
+    </p>
+    """,
     unsafe_allow_html=True
 )
-
 
 
 
