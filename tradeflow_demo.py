@@ -179,15 +179,23 @@ st.plotly_chart(fig2, use_container_width=True)
 st.subheader("🎬 Live Prediction Simulation")
 st.markdown("Interactive playback of model predictions over time (TradingView-style).")
 
-speed = st.slider("Speed (seconds per step)", 0.1, 1.0, 0.25)
+# ⚙️ Настройки пользователя
+speed = st.slider("⏱️ Speed (seconds per step)", 0.05, 1.0, 0.25)
+step_size = st.slider("📏 Step size (bars per tick)", 1, 20, 10)  # 👈 новый ползунок
+
+# 🧱 Плейсхолдеры
 placeholder = st.empty()
 metric_placeholder = st.empty()
 
-start = st.button("▶️ Start Simulation")
-stop_flag = st.session_state.get("stop_sim", False)
+# 🟢 Кнопки управления
+col1, col2 = st.columns(2)
+with col1:
+    start = st.button("▶️ Start Simulation")
+with col2:
+    if st.button("⏹ Stop Simulation"):
+        st.session_state["stop_sim"] = True
 
-if st.button("⏹ Stop Simulation"):
-    st.session_state["stop_sim"] = True
+stop_flag = st.session_state.get("stop_sim", False)
 
 if start:
     st.session_state["stop_sim"] = False  # сбрасываем стоп при новом запуске
@@ -196,7 +204,7 @@ if start:
     total_steps = len(df)
     trade_df = df[df["pred"] != "no_trade"]
 
-    for i in range(30, total_steps, 10):
+    for i in range(30, total_steps, step_size):  # 👈 теперь управляем шагом
         if st.session_state.get("stop_sim"):
             st.warning("⏸ Simulation stopped.")
             break
@@ -208,7 +216,7 @@ if start:
         else:
             live_acc = 0
 
-        # --- построение графика ---
+        # --- График ---
         sim_fig = go.Figure()
 
         sim_fig.add_trace(go.Candlestick(
@@ -262,6 +270,8 @@ if start:
         metric_placeholder.metric("📊 Live Accuracy", f"{live_acc:.2f}%")
         placeholder.plotly_chart(sim_fig, use_container_width=True)
         time.sleep(speed)
+
+
 
 
 # --- Таблица ---
