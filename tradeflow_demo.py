@@ -176,19 +176,19 @@ if not correct.empty:
     fig.add_trace(go.Scatter(
         x=correct["datetime"], y=correct["price"],
         mode="markers", name=" Correct",
-        marker=dict(color="green", size=7, symbol="triangle-up")
+        marker=dict(color="green", size=14, symbol="triangle-up")  # ↑ увеличено
     ))
 if not wrong.empty:
     fig.add_trace(go.Scatter(
         x=wrong["datetime"], y=wrong["price"],
         mode="markers", name=" Wrong",
-        marker=dict(color="red", size=7, symbol="x")
+        marker=dict(color="red", size=14, symbol="x")  # ↑ увеличено
     ))
 if not no_trade.empty:
     fig.add_trace(go.Scatter(
         x=no_trade["datetime"], y=no_trade["price"],
         mode="markers", name=" No Trade",
-        marker=dict(color="orange", size=6, symbol="circle-open")
+        marker=dict(color="orange", size=12, symbol="circle-open")  # ↑ увеличено
     ))
 
 fig.update_layout(
@@ -200,7 +200,7 @@ fig.update_layout(
         y=1.02,
         xanchor="right",
         x=1,
-        font=dict(size=24)  # 👈 увеличиваем размер шрифта легенды (примерно х2)
+        font=dict(size=18)  # 👈 увеличиваем размер шрифта легенды (примерно х2)
     ),
     xaxis=dict(rangeslider=dict(visible=False), type="date", showgrid=False),
     yaxis=dict(showgrid=False),
