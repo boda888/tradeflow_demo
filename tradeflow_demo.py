@@ -194,8 +194,21 @@ if not no_trade.empty:
 fig.update_layout(
     height=500,
     margin=dict(l=30, r=30, t=40, b=30),
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-    xaxis=dict(rangeslider=dict(visible=False), type="date", showgrid=False),
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.05,                # немного выше
+        xanchor="center",
+        x=0.5,                 # центрируем легенду
+        font=dict(size=14, color="white"),  # размер и цвет шрифта
+        itemwidth=40,          # расстояние между элементами
+        bgcolor="rgba(0,0,0,0)"  # прозрачный фон
+    ),
+    xaxis=dict(
+        rangeslider=dict(visible=False),
+        type="date",
+        showgrid=False
+    ),
     yaxis=dict(showgrid=False),
     template="plotly_dark"
 )
