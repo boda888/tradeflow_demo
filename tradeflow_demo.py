@@ -366,17 +366,17 @@ if start:
         # --- Отдельные "фиктивные" следы только для легенды ---
         sim_fig.add_trace(go.Scatter(
             x=[None], y=[None],
-            mode="markers", name="✅ Correct",
+            mode="markers", name=" Correct",
             marker=dict(color="#00E676", size=14, symbol="triangle-up")
         ))
         sim_fig.add_trace(go.Scatter(
             x=[None], y=[None],
-            mode="markers", name="❌ Wrong",
+            mode="markers", name=" Wrong",
             marker=dict(color="#FF1744", size=14, symbol="x")
         ))
         sim_fig.add_trace(go.Scatter(
             x=[None], y=[None],
-            mode="markers", name="⚪ No Trade",
+            mode="markers", name=" No Trade",
             marker=dict(color="#FFD600", size=12, symbol="circle-open")
         ))
 
