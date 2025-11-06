@@ -55,16 +55,6 @@ total_trades = len(trades)
 long_signals = (trades['pred'] == 'up').sum()
 short_signals = (trades['pred'] == 'down').sum()
 
-# --- Меры стабильности точности ---
-# Оценим rolling accuracy (например, за каждые 100 наблюдений)
-if len(trades) > 100:
-    rolling_acc = trades.assign(correct=(trades['pred'] == trades['actual']).astype(int))['correct'].rolling(100).mean().dropna()
-    accuracy_std = rolling_acc.std() * 100  # стандартное отклонение точности
-    consistency = 100 - accuracy_std         # чем меньше разброс, тем стабильнее
-else:
-    accuracy_std = 0
-    consistency = 100
-
 # --- Секция Model Insights ---
 st.subheader("📊 Model Insights Overview")
 
@@ -72,55 +62,47 @@ st.subheader("📊 Model Insights Overview")
 st.markdown("""
 <style>
 div[data-testid="metric-container"] {
-    background: rgba(10,25,47,0.75);
+    background: rgba(10,25,47,0.7); /* Тёмно-синий фон с лёгкой прозрачностью */
     border-radius: 12px;
     padding: 10px 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    border: 1px solid rgba(25,60,120,0.4);
+    border: 1px solid rgba(30,60,120,0.4);
 }
 div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div {
-    color: #90CAF9;
+    color: #90CAF9; /* светло-синий текст */
     font-family: 'Inter', sans-serif;
     font-size: 14px;
+    letter-spacing: 0.3px;
 }
 div[data-testid="stMetricValue"] {
-    color: #2196F3;
+    color: #42A5F5; /* насыщенно-синий акцент */
     font-weight: 600;
     font-size: 20px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Метрики в две строки ---
-row1_col1, row1_col2, row1_col3 = st.columns(3)
-row2_col1, row2_col2, row2_col3 = st.columns(3)
+# --- Верхний ряд ---
+col1, col2, col3 = st.columns(3)
+col1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
+col2.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
+col3.metric("Max Drawdown", f"{max_drawdown * 100:.2f}%")
 
-row1_col1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
-row1_col2.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
-row1_col3.metric("Max Drawdown", f"{max_drawdown*100:.2f}%")
+# --- Нижний ряд ---
+col4, col5, col6 = st.columns(3)
+col4.metric("Total Trades", f"{total_trades}")
+col5.metric("Long Signals 🟢↑", f"{long_signals}")
+col6.metric("Short Signals 🔴↓", f"{short_signals}")
 
-row2_col1.metric("Total Trades", f"{total_trades}")
-row2_col2.metric("Accuracy Deviation", f"{accuracy_std:.2f}%")
-row2_col3.metric("Consistency Index", f"{consistency:.1f}%")
-
-# --- Подпись с сигналами ---
+# --- Краткое резюме под блоком ---
 st.markdown(
-    f"""
-    <div style='display:flex; gap:10px; margin-top:8px;'>
-        <div style='background:rgba(10,25,47,0.7); border:1px solid rgba(30,60,120,0.4);
-                    border-radius:8px; padding:6px 14px;'>
-            <span style='color:#64B5F6; font-family:Inter; font-size:13px;'>🟢 Long signals</span><br>
-            <span style='color:#2196F3; font-size:18px; font-weight:600;'>{long_signals}</span>
-        </div>
-        <div style='background:rgba(10,25,47,0.7); border:1px solid rgba(30,60,120,0.4);
-                    border-radius:8px; padding:6px 14px;'>
-            <span style='color:#64B5F6; font-family:Inter; font-size:13px;'>🔴 Short signals</span><br>
-            <span style='color:#2196F3; font-size:18px; font-weight:600;'>{short_signals}</span>
-        </div>
-    </div>
-    """,
+    f"<p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>"
+    f"Out of {len(df):,} total data points, {total_trades:,} were executed trades. "
+    f"Detected {long_signals} long and {short_signals} short signals. "
+    f"No-trade share: {no_trade_ratio:.1f}%.</p>",
     unsafe_allow_html=True
 )
+
 
 
 
