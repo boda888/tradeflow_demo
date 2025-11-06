@@ -530,4 +530,4 @@ if start:
 
 # --- Таблица ---
 st.subheader("🧾 Recent Predictions")
-st.dataframe(df[df['pred'] != 'no_trade'].tail(30).sort_values('datetime', ascending=False))
+st.dataframe(df[df['pred'] != 'no_trade'].head(30).sort_values('datetime', ascending=False))
