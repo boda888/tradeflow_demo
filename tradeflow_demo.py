@@ -8,7 +8,7 @@ import time
 # --- Настройки страницы ---
 st.set_page_config(page_title="TradeFlow Demo", layout="wide")
 
-st.title("📈 TradeFlow — Automated ML Trading Demo")
+st.title("📈 TradeFlow — ML Trading Demo")
 # st.markdown("""
 # This demo illustrates how the **TradeFlow ML model** predicts short-term BTC price movements.  
 # The system updates every 15 minutes and forecasts the next 1-hour direction (Up / Down / No trade).  
