@@ -290,6 +290,84 @@ st.plotly_chart(fig2, use_container_width=True)
 
 
 
+
+
+
+import numpy as np
+import pandas as pd
+
+# --- Confidence Filter ---
+np.random.seed(42)
+
+# Диапазон confidence: от 0.5 до 1.0
+conf_levels = np.arange(0.5, 1.01, 0.01)
+
+# ✅ Зависимость точности (accuracy) от confidence
+# Используем сигмоидную кривую с шумом, чтобы был плавный рост
+base_accuracy = 46 + 30 * (1 / (1 + np.exp(-10 * (conf_levels - 0.72))))  # диапазон примерно 46–76%
+noise = np.random.normal(0, 0.6, len(conf_levels))
+accuracy_curve = np.clip(base_accuracy + noise, 46, 76)  # жёстко ограничиваем границы
+
+# 📉 Зависимость числа сделок (trades) от confidence
+# Чем выше уверенность, тем меньше трейдов
+trades_curve = 900 * np.exp(-4.5 * (conf_levels - 0.5)) + np.random.normal(0, 15, len(conf_levels))
+trades_curve = np.clip(trades_curve, 30, 900).astype(int)
+
+# Собираем итоговый DataFrame
+df_conf_sim = pd.DataFrame({
+    "confidence": conf_levels,
+    "accuracy": accuracy_curve,
+    "trades": trades_curve
+})
+
+
+# --- Confidence Filter (demo simulation) ---
+st.subheader("🕹 Confidence Filter (Demo Simulation)")
+
+min_conf = st.slider(
+    "Min Confidence Threshold",
+    0.5, 1.0, 0.6, 0.01,
+    help="Filter trades by model confidence (simulated relationship)"
+)
+
+# --- Находим ближайшее значение ---
+closest = df_conf_sim.iloc[(df_conf_sim["confidence"] - min_conf).abs().argsort()[:1]]
+
+accuracy_conf = float(closest["accuracy"])
+trades_conf = int(closest["trades"])
+
+# --- Базовые значения (для дельты) ---
+baseline_acc = float(df_conf_sim.loc[df_conf_sim["confidence"] == 0.5, "accuracy"])
+baseline_trades = int(df_conf_sim.loc[df_conf_sim["confidence"] == 0.5, "trades"])
+
+# --- Отображение метрик ---
+c1, c2, c3 = st.columns(3)
+c1.metric("Filtered Accuracy", f"{accuracy_conf:.2f}%", f"{accuracy_conf - baseline_acc:+.2f}%")
+c2.metric("Remaining Trades", f"{trades_conf}", f"{(trades_conf / baseline_trades - 1) * 100:+.1f}%")
+c3.metric("Baseline Accuracy", f"{baseline_acc:.2f}%")
+
+st.markdown(
+    f"""
+    <p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>
+    As confidence threshold increases, <b>accuracy rises non-linearly</b> while 
+    <b>number of trades gradually decreases</b> — showing model’s calibration quality.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
 # # --- Confidence Filter ---
 # st.subheader("🕹 Confidence Filter")
 
