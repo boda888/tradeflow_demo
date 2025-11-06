@@ -197,12 +197,10 @@ fig.update_layout(
     legend=dict(
         orientation="h",
         yanchor="bottom",
-        y=1.05,                # немного выше
-        xanchor="center",
-        x=0.5,                 # центрируем легенду
-        font=dict(size=14, color="white"),  # размер и цвет шрифта
-        itemwidth=40,          # расстояние между элементами
-        bgcolor="rgba(0,0,0,0)"  # прозрачный фон
+        y=1.02,                # оставляем как было
+        xanchor="right",
+        x=1,
+        font=dict(size=14, color="white"),  # увеличиваем шрифт
     ),
     xaxis=dict(
         rangeslider=dict(visible=False),
