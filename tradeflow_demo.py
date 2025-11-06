@@ -58,8 +58,7 @@ c3.metric("Total Return (simulated)", f"{total_pnl:.2f}%")
 # --- Основной график ---
 st.subheader("📉 BTC Price & Model Predictions")
 
-
-# --- Ползунок для выбора даты ---
+# --- Ползунок выбора диапазона ---
 min_date, max_date = df["datetime"].min(), df["datetime"].max()
 date_range = st.slider(
     "Select Date Range",
@@ -70,10 +69,31 @@ date_range = st.slider(
     format="YYYY-MM-DD"
 )
 
-# --- Фильтрация данных ---
+# --- Фильтрация ---
 mask = (df["datetime"] >= pd.Timestamp(date_range[0])) & (df["datetime"] <= pd.Timestamp(date_range[1]))
 filtered_df = df.loc[mask]
 filtered_trades = filtered_df[filtered_df["pred"] != "no_trade"]
+
+# --- Метрика точности ---
+if not filtered_trades.empty:
+    range_accuracy = (filtered_trades["pred"] == filtered_trades["actual"]).mean() * 100
+else:
+    range_accuracy = 0
+
+st.markdown(
+    f"""
+    <div style='background-color:rgba(0,188,212,0.08);
+                border-radius:10px;
+                padding:10px 15px;
+                margin-bottom:10px;
+                width:220px;
+                text-align:center;
+                font-family:Inter, sans-serif;'>
+        <span style='font-size:13px; color:#80DEEA;'>Accuracy for selected range</span><br>
+        <span style='font-size:28px; font-weight:600; color:#00E5FF;'>{range_accuracy:.2f}%</span>
+    </div>
+    """, unsafe_allow_html=True
+)
 
 # --- Построение графика ---
 fig = go.Figure()
@@ -117,6 +137,7 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
