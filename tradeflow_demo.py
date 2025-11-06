@@ -58,43 +58,59 @@ short_signals = (trades['pred'] == 'down').sum()
 # --- Секция Model Insights ---
 st.subheader("📊 Model Insights Overview")
 
-# --- Glass-style оформление метрик ---
+# --- Glass-style оформление ---
 st.markdown("""
 <style>
 div[data-testid="metric-container"] {
-    background: rgba(10,25,47,0.7); /* Тёмно-синий фон с лёгкой прозрачностью */
+    background: rgba(10,25,47,0.7);
     border-radius: 12px;
     padding: 10px 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     border: 1px solid rgba(30,60,120,0.4);
+    transition: all 0.3s ease-in-out;
+}
+div[data-testid="metric-container"]:hover {
+    box-shadow: 0 0 10px rgba(33,150,243,0.5);
 }
 div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div {
-    color: #90CAF9; /* светло-синий текст */
+    color: #90CAF9;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     letter-spacing: 0.3px;
 }
 div[data-testid="stMetricValue"] {
-    color: #42A5F5; /* насыщенно-синий акцент */
+    color: #42A5F5;
     font-weight: 600;
     font-size: 20px;
 }
 </style>
 """, unsafe_allow_html=True)
 
+# SVG стрелки
+arrow_up_svg = "&#9650;"   # зелёная ▲
+arrow_down_svg = "&#9660;" # красная ▼
+
 # --- Верхний ряд ---
-col1, col2, col3 = st.columns(3)
-col1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
-col2.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
-col3.metric("Max Drawdown", f"{max_drawdown * 100:.2f}%")
+c1, c2, c3 = st.columns(3)
+c1.metric("Overall Accuracy (Trades Only)", f"{accuracy:.2f}%")
+c2.metric("No-Trade Ratio", f"{no_trade_ratio:.1f}%")
+c3.metric("Max Drawdown", f"{max_drawdown * 100:.2f}%")
 
 # --- Нижний ряд ---
-col4, col5, col6 = st.columns(3)
-col4.metric("Total Trades", f"{total_trades}")
-col5.metric("Long Signals 🟢↑", f"{long_signals}")
-col6.metric("Short Signals 🔴↓", f"{short_signals}")
+c4, c5, c6 = st.columns(3)
+c4.metric("Total Trades", f"{total_trades}")
+c5.markdown(
+    f"<div style='font-size:20px; color:#4CAF50; font-weight:600;'>{arrow_up_svg} {long_signals}</div>"
+    f"<div style='font-size:13px; color:#90CAF9;'>Long Signals</div>",
+    unsafe_allow_html=True
+)
+c6.markdown(
+    f"<div style='font-size:20px; color:#E53935; font-weight:600;'>{arrow_down_svg} {short_signals}</div>"
+    f"<div style='font-size:13px; color:#90CAF9;'>Short Signals</div>",
+    unsafe_allow_html=True
+)
 
-# --- Краткое резюме под блоком ---
+# --- Краткое резюме ---
 st.markdown(
     f"<p style='font-size:13px; color:#90CAF9; font-family:Inter, sans-serif;'>"
     f"Out of {len(df):,} total data points, {total_trades:,} were executed trades. "
@@ -102,6 +118,7 @@ st.markdown(
     f"No-trade share: {no_trade_ratio:.1f}%.</p>",
     unsafe_allow_html=True
 )
+
 
 
 
