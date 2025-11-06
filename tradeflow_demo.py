@@ -20,11 +20,9 @@ st.markdown("""
 ### Model Summary
 **Model:** TradeFlow v0.3  
 **Trained on:** BTC/USDT (15-minute candles)  
-**Data period:** Jan 2024 – Oct 2025  
-**Model type:** Gradient Boosted Trees (XGBoost v1.7)  
+**Data period:** Sep 2025 – Oct 2025  
+**Model type:** LGBMClassifier
 **Signal horizon:** 1 hour ahead  
-**Latency:** <1s per tick (RTX 3060)  
-**Deployment:** FastAPI + n8n integration  
 """)
 
 
