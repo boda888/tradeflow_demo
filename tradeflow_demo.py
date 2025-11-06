@@ -9,11 +9,58 @@ import time
 st.set_page_config(page_title="TradeFlow Demo", layout="wide")
 
 st.title("📈 TradeFlow — Automated ML Trading Demo")
-st.markdown("""
-This demo illustrates how the **TradeFlow ML model** predicts short-term BTC price movements.  
-The system updates every 15 minutes and forecasts the next 1-hour direction (Up / Down / No trade).  
-The focus here is on **prediction accuracy and model confidence**, rather than profit.
-""")
+# st.markdown("""
+# This demo illustrates how the **TradeFlow ML model** predicts short-term BTC price movements.  
+# The system updates every 15 minutes and forecasts the next 1-hour direction (Up / Down / No trade).  
+# The focus here is on **prediction accuracy and model confidence**, rather than profit.
+# """)
+
+# --- Model Summary ---
+with st.container():
+    st.markdown("""
+    <div style="
+        background: rgba(13, 71, 161, 0.15);
+        border: 1px solid rgba(100, 181, 246, 0.4);
+        border-radius: 12px;
+        padding: 20px 25px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-family: 'Inter', sans-serif;
+        color: #E3F2FD;
+        ">
+        <h3 style="color:#90CAF9; margin-bottom:10px;">🧠 Model Summary</h3>
+        <table style="width:100%; color:#E3F2FD; font-size:14px;">
+            <tr>
+                <td style="padding:4px 0; width:25%; color:#BBDEFB;">Model name</td>
+                <td><b style="color:#FFFFFF;">TradeFlow v0.3</b></td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#BBDEFB;">Trained on</td>
+                <td>BTC/USDT (15-minute candles)</td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#BBDEFB;">Data period</td>
+                <td>Jan 2024 – Oct 2025</td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#BBDEFB;">Model type</td>
+                <td>Gradient Boosted Trees (XGBoost v1.7)</td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#BBDEFB;">Signal horizon</td>
+                <td>1 hour ahead prediction</td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#BBDEFB;">Latency</td>
+                <td>< 1 s per tick (on RTX 3060)</td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#BBDEFB;">Deployment</td>
+                <td>FastAPI + n8n workflow integration</td>
+            </tr>
+        </table>
+    </div>
+    """, unsafe_allow_html=True)
 
 # --- Загрузка CSV ---
 csv_path = Path("tradeflow_demo.csv")
