@@ -204,17 +204,17 @@ fig.add_trace(go.Scatter(
 ))
 fig.add_trace(go.Scatter(
     x=[None], y=[None],
-    mode="markers", name="✅ Correct",
+    mode="markers", name=" Correct",
     marker=dict(color="green", size=14, symbol="triangle-up")
 ))
 fig.add_trace(go.Scatter(
     x=[None], y=[None],
-    mode="markers", name="❌ Wrong",
+    mode="markers", name=" Wrong",
     marker=dict(color="red", size=14, symbol="x")
 ))
 fig.add_trace(go.Scatter(
     x=[None], y=[None],
-    mode="markers", name="⚪ No Trade",
+    mode="markers", name=" No Trade",
     marker=dict(color="orange", size=12, symbol="circle-open")
 ))
 
