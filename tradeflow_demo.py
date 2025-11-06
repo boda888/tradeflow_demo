@@ -15,40 +15,18 @@ st.title("📈 TradeFlow — Automated ML Trading Demo")
 # The focus here is on **prediction accuracy and model confidence**, rather than profit.
 # """)
 
-# --- Compact Model Summary ---
+# --- Minimal Model Summary ---
 st.markdown("""
-<div style="
-    background: rgba(13, 71, 161, 0.08);
-    border: 1px solid rgba(100, 181, 246, 0.4);
-    border-radius: 10px;
-    padding: 15px 20px;
-    margin: 10px 0 25px 0;
-    font-family: 'Inter', sans-serif;
-    color: #E3F2FD;
-">
-  <div style="display: flex; align-items: center; margin-bottom: 10px;">
-    <span style="font-size: 20px; margin-right: 8px;">🧠</span>
-    <span style="font-size: 18px; font-weight: 600; color:#90CAF9;">Model Summary</span>
-  </div>
+### Model Summary
+**Model:** TradeFlow v0.3  
+**Trained on:** BTC/USDT (15-minute candles)  
+**Data period:** Jan 2024 – Oct 2025  
+**Model type:** Gradient Boosted Trees (XGBoost v1.7)  
+**Signal horizon:** 1 hour ahead  
+**Latency:** <1s per tick (RTX 3060)  
+**Deployment:** FastAPI + n8n integration  
+""")
 
-  <div style="display: flex; flex-wrap: wrap; font-size: 14px; line-height: 1.5;">
-    <div style="flex: 1 1 45%; min-width: 220px;">
-      <b style="color:#BBDEFB;">Model:</b> TradeFlow v0.3<br>
-      <b style="color:#BBDEFB;">Trained on:</b> BTC/USDT (15-min candles)<br>
-      <b style="color:#BBDEFB;">Period:</b> Jan 2024 – Oct 2025
-    </div>
-    <div style="flex: 1 1 45%; min-width: 220px;">
-      <b style="color:#BBDEFB;">Type:</b> XGBoost (Gradient Boosted Trees)<br>
-      <b style="color:#BBDEFB;">Horizon:</b> 1h ahead<br>
-      <b style="color:#BBDEFB;">Latency:</b> &lt;1s per tick
-    </div>
-  </div>
-
-  <div style="margin-top: 8px; font-size: 13px; color:#90CAF9;">
-    🔗 Deployment: FastAPI + n8n integration
-  </div>
-</div>
-""", unsafe_allow_html=True)
 
 
 # --- Загрузка CSV ---
